@@ -4,9 +4,9 @@ z := invoke f(y);
 t := ? / z;
 invoke f(?);
 if ? != 0 then {
-  assume t != 0;
-  invoke g(?);
+    assume t != 0;
+    invoke g(?);
 } else {
-  invoke h(?);
+    invoke h(?);
 }
 assert t != 0;
