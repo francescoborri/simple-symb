@@ -28,7 +28,7 @@ rule read = parse
   | ">=" { GE }
   | "skip" { SKIP }
   | ":=" { ASSIGN }
-  | ';' { SEQ }
+  | ';' { SEMICOLON }
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }
@@ -37,6 +37,7 @@ rule read = parse
   | "assume" { ASSUME }
   | "assert" { ASSERT }
   | "invoke" { INVOKE }
+  | ',' { COMMA }
   | '(' { LPAREN }
   | ')' { RPAREN }
   | '{' { LBRACE }

@@ -9,15 +9,20 @@ let empty_or_add_newline str =
 
 let string_of_env ~indent_level env =
   let indent = build_indent_string indent_level in
-  env |> Map.bindings
+  env |> SymbMap.bindings
   |> List.map (fun (x, v) -> Fmt.str "%s%s -> %a" indent x Typed.ppa v)
   |> String.concat "\n"
 
 let string_of_hist ~indent_level hist =
+  let string_of_args args =
+    List.map (Fmt.str "%a" Typed.ppa) args |> String.concat ", "
+  in
   let indent = build_indent_string indent_level in
   hist
-  |> List.mapi (fun idx (f, arg) ->
-      Fmt.str "%s- Call#%d: %s(%a)" indent (idx + 1) f Typed.ppa arg)
+  |> List.mapi (fun idx { serv_name; args; qos } ->
+      Fmt.str "%s- Call#%d: %s(%s), QoS: { cost = %a, latency = %a }" indent
+        (idx + 1) serv_name (string_of_args args) Typed.ppa qos.cost Typed.ppa
+        qos.latency)
   |> String.concat "\n"
 
 let string_of_path_condition ~indent_level path_condition =

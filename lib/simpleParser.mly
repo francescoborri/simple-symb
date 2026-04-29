@@ -9,9 +9,9 @@
 %token ADD SUB MUL DIV
 %token AND OR NOT
 %token EQ NEQ LT LE GT GE
-%token SKIP ASSIGN SEQ IF THEN ELSE WHILE DO
+%token SKIP ASSIGN SEMICOLON IF THEN ELSE WHILE DO
 %token ASSUME ASSERT INVOKE
-%token LPAREN RPAREN LBRACE RBRACE EOF
+%token COMMA LPAREN RPAREN LBRACE RBRACE EOF
 
 %start <stmt> prog
 
@@ -59,12 +59,14 @@ block:
   | LBRACE ; stmt = stmt ; RBRACE { stmt }
 
 atom_stmt:
-  | SKIP ; SEQ { Skip }
-  | x = ID ; ASSIGN ; aexpr = aexpr ; SEQ { Assign (x, aexpr) }
-  | ASSUME ; bexpr = bexpr ; SEQ { Assume (bexpr) }
-  | ASSERT ; bexpr = bexpr ; SEQ { Assert (bexpr) }
-  | INVOKE ; f = ID ; LPAREN ; aexpr = aexpr ; RPAREN ; SEQ { Invoke (f, aexpr) }
-  | x = ID ; ASSIGN ; INVOKE ; f = ID ; LPAREN ; aexpr = aexpr ; RPAREN ; SEQ { AssignInvoke (x, f, aexpr) }
+  | SKIP ; SEMICOLON { Skip }
+  | x = ID ; ASSIGN ; aexpr = aexpr ; SEMICOLON { Assign (x, aexpr) }
+  | ASSUME ; bexpr = bexpr ; SEMICOLON { Assume (bexpr) }
+  | ASSERT ; bexpr = bexpr ; SEMICOLON { Assert (bexpr) }
+  | INVOKE ; serv = ID ; LPAREN ; args = separated_nonempty_list(COMMA, aexpr) ; RPAREN ; SEMICOLON
+    { Invoke (serv, args) }
+  | x = ID ; ASSIGN ; INVOKE ; serv = ID ; LPAREN ; args = separated_nonempty_list(COMMA, aexpr) ; RPAREN ; SEMICOLON
+    { AssignInvoke (x, serv, args) }
 
 structured_stmt:
   | IF ; bexpr = bexpr ; THEN ; block1 = block ; ELSE ; block2 = block { If (bexpr, block1, block2) }

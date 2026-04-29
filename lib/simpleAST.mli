@@ -22,5 +22,5 @@ type stmt =
   | While of bexpr * stmt
   | Assume of bexpr
   | Assert of bexpr
-  | Invoke of string * aexpr
-  | AssignInvoke of string * string * aexpr
+  | Invoke of string * aexpr list
+  | AssignInvoke of string * string * aexpr list

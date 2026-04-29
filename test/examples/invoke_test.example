@@ -1,6 +1,6 @@
 x := 3 / ?;
 y := 1 / x;
-z := invoke f(y);
+z := invoke f(y, x);
 t := ? / z;
 invoke f(?);
 if ? != 0 then {

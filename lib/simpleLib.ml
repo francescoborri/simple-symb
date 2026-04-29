@@ -9,4 +9,6 @@ let parse src =
   Parser.prog Lexer.read lexbuf
 
 let symb_run stmt ~mode =
-  stmt |> SymbInterpreter.build_symb_process |> SymbInterpreter.Symex.run ~mode
+  stmt
+  |> SymbInterpreter.build_symb_process
+  |> SymbInterpreter.Symex.run ~mode
