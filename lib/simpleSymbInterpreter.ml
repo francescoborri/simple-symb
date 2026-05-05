@@ -89,15 +89,14 @@ let rec symb_eval_stmt state = function
       Symex.Result.ok state
   | Assert bexpr ->
       let** cond = wrap_error (symb_eval_bexpr state.env bexpr) state.hist in
-      (* In OX mode, result = true iff not cond is UNSAT *)
-      let* result = Symex.assert_ cond in
-      if result then Symex.Result.ok state
-      else
-        Symex.Result.error
+      let** () =
+        Symex.assert_or_error cond
           {
             msg = Fmt.str "Assertion %a failed" Typed.ppa cond;
             hist = state.hist;
           }
+      in
+      Symex.Result.ok state
   | Invoke (serv, args) ->
       let** args =
         Symex.Result.map_list args ~f:(fun arg ->
